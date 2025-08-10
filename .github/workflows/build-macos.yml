@@ -1,0 +1,42 @@
+# .github/workflows/build-macos.yml
+# This workflow builds the SimpleRes macOS app on every push to the master branch.
+
+name: Build macOS App
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Use a specific LTS version of Node.js
+
+      - name: Install Homebrew dependencies
+        run: brew install displayplacer
+
+      - name: Install Node.js dependencies
+        run: npm install
+
+      - name: Compile the screenresolution tool
+        run: make
+
+      - name: Build and package the Electron app
+        run: npm run dist
+        env:
+          # This is required by electron-builder for code signing on macOS
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Upload macOS App Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: SimpleRes-macOS
+          path: dist/*.dmg # Upload the distributable DMG file

@@ -1,0 +1,116 @@
+/* Monochrome macOS look — smaller, clear white button, distinct hover, no borders/shadows/scroll */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    color-scheme: light dark;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+    --bg: #f6f6f6;
+    --fg: #000;
+    --muted: #666;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0a0a0a;
+        --fg: #fff;
+        --muted: #aaa;
+    }
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+}
+
+.container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    padding: 12px;         /* smaller */
+}
+
+#dropdown-container {
+    flex: 1;
+    display: grid;
+    gap: 8px;              /* smaller */
+}
+
+.display-group {
+    display: flex; /* Changed to flexbox for alignment */
+    align-items: center; /* Vertically centers items */
+    gap: 8px; /* Space between label and select */
+    padding: 6px 0;        /* flat block, no bg/border */
+}
+
+.display-label {
+    font-size: 11px;       /* smaller */
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    flex: 0 0 50%; /* Sets the width to 50% */
+}
+
+/* Select — keep white with visible text in all themes */
+.resolution-select {
+    appearance: menulist;
+    -webkit-appearance: menulist;
+    color-scheme: light;
+    width: 100%;
+    padding: 6px 10px;     /* FIX: Reduced vertical padding to make it shorter */
+    font-size: 13px;       /* smaller */
+    background: #fff;
+    color: #000;
+    -webkit-text-fill-color: #000;
+    border: none;
+    border-radius: 10px;   /* slightly tighter */
+    /* Removed fixed height */
+}
+.resolution-select:focus-visible {
+    outline: 2px solid var(--fg);
+    outline-offset: 2px;
+}
+.resolution-select option,
+.resolution-select optgroup {
+    color: #000;
+    background: #fff;
+}
+
+.footer {
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+/* White primary button — distinct hover that works in light & dark */
+#quit-btn {
+    appearance: button;
+    -webkit-appearance: push-button;
+    font: inherit;
+    font-size: 13px;       /* smaller */
+    color: #000;
+    background: #fff;
+    padding: 10px 14px;    /* smaller */
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+#quit-btn:hover {
+    background: #e9e9e9;   /* grey hover (not same as page bg in any theme) */
+    color: #000;
+}
+#quit-btn:active { background: #dcdcdc; }
+#quit-btn:focus-visible { outline: 2px solid var(--fg); outline-offset: 2px; }
+
+/* no inner scrolling */
+#dropdown-container, .display-group { overflow: visible; }

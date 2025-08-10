@@ -137,3 +137,12 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+.idea
+
+# Build artifacts
+dist/
+release/
+
+# macOS
+.DS_Store

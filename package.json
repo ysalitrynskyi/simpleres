@@ -1,0 +1,43 @@
+{
+  "name": "simpleres",
+  "version": "1.0.0",
+  "description": "A simple resolution switcher for macOS.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ysalitrynskyi/simpleres.git"
+  },
+  "keywords": [],
+  "author": "Yevhen Salitrynskyi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ysalitrynskyi/simpleres/issues"
+  },
+  "homepage": "https://github.com/ysalitrynskyi/simpleres#readme",
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  },
+  "dependencies": {},
+  "build": {
+    "appId": "com.ysalitrynskyi.simpleres",
+    "mac": {
+      "category": "public.app-category.utilities",
+      "target": "dmg",
+      "icon": "assets/icon.icns"
+    },
+    "extraFiles": [
+      {
+        "from": "bin/screenresolution",
+        "to": "Resources/screenresolution",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ]
+  }
+}
