@@ -1,23 +1,26 @@
 # .github/workflows/build-macos.yml
+# This workflow builds the SimpleRes macOS app on every push to the main branch.
 
 name: Build macOS App
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main ] # Ensure this matches your default branch name (e.g., main or master)
 
 jobs:
   build:
-    runs-on: macos-latest
+    # Use a specific version of macOS for long-term stability
+    runs-on: macos-14
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: '18' # Use a specific LTS version of Node.js
+          node-version: '18'
+          cache: 'npm' # Add caching for faster builds
 
       - name: Install Homebrew dependencies
         run: brew install displayplacer
@@ -35,7 +38,8 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Upload macOS App Artifact
-        uses: actions/upload-artifact@v3
+        # **FIX:** Updated to the latest version (v4) to resolve the deprecation error
+        uses: actions/upload-artifact@v4
         with:
           name: SimpleRes-macOS
           path: dist/*.dmg # Upload the distributable DMG file
