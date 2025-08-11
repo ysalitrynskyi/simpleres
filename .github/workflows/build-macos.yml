@@ -1,12 +1,11 @@
 # .github/workflows/build-macos.yml
-# This workflow builds and releases the macOS app when a new tag is pushed.
+# This workflow builds and releases the macOS app when a new release is published on GitHub.
 
 name: Build and Release macOS App
 
 on:
-  push:
-    tags:
-      - 'v*.*.*' # Triggers the workflow when you push a tag like v1.0.0, v1.0.1, etc.
+  release:
+    types: [published] # **FIX:** Triggers the workflow when you click "Publish release".
 
 jobs:
   build:
@@ -26,11 +25,9 @@ jobs:
       run: npm install
 
     - name: Build and package the Electron app
-      # This step creates the DMG file.
-      run: npm run dist
+      # **FIX:** Added '--publish never' to prevent electron-builder from creating its own release.
+      run: npm run dist -- --publish never
       env:
-        # The secret token allows electron-builder to create the release on your behalf
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
         CSC_IDENTITY_AUTO_DISCOVERY: false
 
     - name: Find DMG file path
@@ -39,11 +36,12 @@ jobs:
       run: echo "dmg_path=$(find ./dist -name '*.dmg' | head -n 1)" >> $GITHUB_ENV
 
     - name: Upload macOS App Artifact to Release
-      # **FIX:** Re-added the explicit step to upload the DMG to the release.
+      # This is the custom upload step you requested.
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
+        # This is now valid because the workflow is triggered by a release event.
         upload_url: ${{ github.event.release.upload_url }}
         asset_path: ${{ env.dmg_path }}
         asset_name: SimpleRes-${{ github.ref_name }}.dmg
