@@ -1,11 +1,11 @@
 # .github/workflows/build-macos.yml
-# This workflow builds and releases the macOS app when a new release is created on GitHub.
+# This workflow builds and releases the macOS app when a new release is published on GitHub.
 
 name: Build and Release macOS App
 
 on:
   release:
-    types: [created] # **FIX:** This now triggers the workflow only when you create a release.
+    types: [published] # **FIX:** Triggers the workflow when you click "Publish release".
 
 jobs:
   build:
@@ -35,12 +35,12 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Upload macOS App Artifact to Release
-        # This step is now more explicit about uploading to the release that triggered the workflow
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ github.event.release.upload_url }}
-          asset_path: ./dist/simpleres-1.0.0-arm64.dmg
+          # **FIX:** Use a wildcard to automatically find the correct DMG file
+          asset_path: ./dist/*.dmg
           asset_name: SimpleRes-${{ github.ref_name }}.dmg
           asset_content_type: application/octet-stream
