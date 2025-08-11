@@ -6,31 +6,45 @@ name: Build and Release macOS App
 on:
   push:
     tags:
-      - 'v*.*.*' # **FIX:** Triggers the workflow when you push a tag like v1.0.0, v1.0.1, etc.
+      - 'v*.*.*' # Triggers the workflow when you push a tag like v1.0.0, v1.0.1, etc.
 
 jobs:
   build:
     runs-on: macos-14
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
 
-      - name: Install Node.js dependencies
-        run: npm install
+    - name: Install Node.js dependencies
+      run: npm install
 
-      - name: Build and package the Electron app
-        # This step now handles the entire release process
-        run: npm run dist
-        env:
-          # The secret token allows electron-builder to create the release on your behalf
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          CSC_IDENTITY_AUTO_DISCOVERY: false
+    - name: Build and package the Electron app
+      # This step creates the DMG file.
+      run: npm run dist
+      env:
+        # The secret token allows electron-builder to create the release on your behalf
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+        CSC_IDENTITY_AUTO_DISCOVERY: false
 
-    # The separate upload step is no longer needed, as electron-builder handles it.
+    - name: Find DMG file path
+      # This step finds the exact path of the built DMG file to avoid errors.
+      id: find_dmg
+      run: echo "dmg_path=$(find ./dist -name '*.dmg' | head -n 1)" >> $GITHUB_ENV
+
+    - name: Upload macOS App Artifact to Release
+      # **FIX:** Re-added the explicit step to upload the DMG to the release.
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }}
+        asset_path: ${{ env.dmg_path }}
+        asset_name: SimpleRes-${{ github.ref_name }}.dmg
+        asset_content_type: application/octet-stream
