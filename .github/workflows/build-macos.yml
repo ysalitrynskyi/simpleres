@@ -28,9 +28,6 @@ jobs:
       - name: Install Node.js dependencies
         run: npm install
 
-      - name: Compile the screenresolution tool
-        run: make
-
       - name: Build and package the Electron app
         run: npm run dist
         env:
