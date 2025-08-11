@@ -1,11 +1,10 @@
 # .github/workflows/build-macos.yml
-# This workflow builds the SimpleRes macOS app on every push to the master branch.
 
 name: Build macOS App
 
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
