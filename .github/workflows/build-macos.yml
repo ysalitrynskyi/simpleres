@@ -5,11 +5,15 @@ name: Build and Release macOS App
 
 on:
   release:
-    types: [published] # **FIX:** Triggers the workflow when you click "Publish release".
+    types: [published] # Triggers the workflow when you click "Publish release".
 
 jobs:
   build:
     runs-on: macos-14
+    # **FIX:** Add write permissions for the contents of the repository.
+    # This is required for the upload-release-asset action to work.
+    permissions:
+      contents: write
 
     steps:
     - name: Checkout repository
@@ -25,7 +29,7 @@ jobs:
       run: npm install
 
     - name: Build and package the Electron app
-      # **FIX:** Added '--publish never' to prevent electron-builder from creating its own release.
+      # Added '--publish never' to prevent electron-builder from creating its own release.
       run: npm run dist -- --publish never
       env:
         CSC_IDENTITY_AUTO_DISCOVERY: false
